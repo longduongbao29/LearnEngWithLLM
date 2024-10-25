@@ -1,6 +1,7 @@
 # import getpass
 import os
 # from langchain_groq import ChatGroq
+from openai import OpenAI
 from langchain_openai import ChatOpenAI
 # if "GROQ_API_KEY" not in os.environ:
 #     os.environ["GROQ_API_KEY"] = getpass.getpass("Enter your Groq API key: ")
@@ -18,3 +19,11 @@ if "OPENAI_API_KEY" not in os.environ:
     print("API KEY does not exists!")
     
 llm_openai =  ChatOpenAI(model="gpt-4o", temperature=1)
+
+
+# client = OpenAI()
+# audio_file= open("voice.mp3", "rb")
+# transcription = client.audio.transcriptions.create(
+#   model="whisper-1", 
+#   file=audio_file
+# )
