@@ -1,0 +1,31 @@
+services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    environment:
+      - NGROK_AUTHTOKEN=2fbBZeTS9e2hEluxC3r56TMRDNK_7XxMqvDsFuTWy7T1GpGFD
+      - USER=$(whoami)
+    command:
+      - "http"
+      - "http://app:7860"
+    volumes:
+      - ./ngrok:/etc:rw
+    ports:
+      - 4040:4040
+    depends_on:
+      - app
+    networks:
+      - intra_net
+  app:
+    image: long/le_app:latest
+    env_file:
+      - .env
+    ports:
+      - 7860:7860
+    volumes:
+      - ./vocabs:/app/vocabs:rw
+    networks:
+      - intra_net
+
+networks:
+  intra_net:
+    driver: bridge
