@@ -1,26 +1,26 @@
 from langchain.agents import create_tool_calling_agent
 from langchain.agents import AgentExecutor
-from prompts import prompt_vi, prompt_en
+from prompts import prompt_learning,prompt_reviewing
 from llm_model import llm_openai
-from agent_tools import save_vocab, check_vocab_exists, load_vocabs_for_review, load_all_vocabs, get_current_datetime
+from agent_tools import save_vocab, check_vocab_exists, load_vocabs_for_review, load_all_vocabs
 
-LANG_PROMPT = {
-    "English": prompt_en,
-    "Tiếng Việt" : prompt_vi
+ACTIVITY_PROMPT = {
+    "Learning": prompt_learning,
+    "Reviewing" : prompt_reviewing
 }
 
 class Agent:
   
     def __init__(self) -> None:
-        self.prompt=prompt_en
-        self.tools = [save_vocab, check_vocab_exists,  load_vocabs_for_review, load_all_vocabs, get_current_datetime]      
+        self.prompt=prompt_learning
+        self.tools = [save_vocab, check_vocab_exists,  load_vocabs_for_review, load_all_vocabs]      
         self.agent = create_tool_calling_agent(llm_openai, self.tools, self.prompt)
-        self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose=True)
-        self.current_lang = "English"
+        self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose= True)
+        self.activity = "Learning"
     
-    def switch_lang(self,lang):
-        if lang != self.current_lang:
-            self.current_lang = lang
-            self.prompt = LANG_PROMPT[lang]
+    def switch_act(self,activity_):
+        if activity_ != self.activity:
+            self.activity = activity_
+            self.prompt = ACTIVITY_PROMPT[activity_]
             self.agent = create_tool_calling_agent(llm_openai, self.tools, self.prompt)
-            self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose=True)
+            self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools,verbose= True)
