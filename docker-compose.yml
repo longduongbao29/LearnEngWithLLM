@@ -7,27 +7,39 @@ services:
       - USER=$(whoami)
     command:
       - "http"
-      - "http://app:7860"
+      - "http://front_end"
     volumes:
       - ./ngrok:/etc:rw
     ports:
       - 4040:4040
     depends_on:
-      - app
+      - front_end
     networks:
       - intra_net
   app:
     image: long/le_app:latest
     container_name: le_app
     env_file:
-      - .env
+      - app/.env
     ports:
-      - 7860:7860
+      - 8000:8000
     volumes:
-      - ./vocabs:/app/vocabs:rw
+      - ./app/vocabs:/app/vocabs:rw
+
     networks:
       - intra_net
-
+  front_end:
+    image: long/le_front_end:latest
+    container_name: le_front_end
+    ports:
+      - 80:80
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:rw
+      - ./frontend:/usr/share/nginx/html:rw
+    networks:
+      - intra_net
+    depends_on:
+      - app
 networks:
   intra_net:
     driver: bridge

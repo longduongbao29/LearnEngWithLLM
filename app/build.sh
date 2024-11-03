@@ -1,0 +1,1 @@
+ docker build -t long/le_app .

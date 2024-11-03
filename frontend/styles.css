@@ -1,0 +1,521 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.main-container {
+    background-image: url('image.png');
+    /* Path to your image */
+    background-size: cover;
+    /* Cover the entire area */
+    background-position: center;
+    /* Center the image */
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container-left {
+    order: 1;
+    display: flex;
+    /* Use flexbox to align the sidebar and button */
+    position: relative;
+    /* Relative positioning for absolute children */
+}
+
+.container-right {
+    order: 3;
+    display: flex;
+    position: relative;
+}
+
+#dictionary {
+    width: 400px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #1e1e1ee9;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-right: 1px solid #333;
+    transition: width 0.3s ease;
+    position: relative;
+    border-radius: 15px;
+    overflow-y: auto;/
+    /* Position relative for icon alignment */
+}
+
+
+.resizer {
+    cursor: ew-resize;
+    /* Con trỏ khi rê chuột qua */
+    width: 5px;
+    /* Kích thước phần tử kéo */
+    background: #ccc;
+    /* Màu nền của phần tử kéo */
+    height: 100%;
+    /* Chiều cao chiếm toàn bộ chiều cao của viewport */
+    position: absolute;
+    /* Để phần tử kéo nằm cạnh sidebar */
+    /* left: 0; */
+    /* Đặt nó ở bên phải của sidebar */
+    top: 0;
+    /* Đặt nó ở trên cùng */
+    z-index: 1000;
+}
+
+.sidebar.hidden {
+    width: 0px;
+    /* Adjusted width when hidden */
+    overflow: hidden;
+}
+
+.sidebar.hidden .sidebar-content {
+    display: none;
+    /* Hide content when sidebar is collapsed */
+}
+
+.sidebar-content {
+    transition: opacity 0.3s ease;
+    /* Smooth transition for content */
+}
+
+
+#toggleSidebar {
+    background: transparent;
+    /* Make the button background transparent */
+    border: none;
+    /* Remove border */
+    color: #ffffff;
+    /* Icon color */
+    cursor: pointer;
+    /* Pointer cursor */
+    font-size: 20px;
+    /* Size of the icon */
+    position: absolute;
+    /* Position the button absolutely within the sidebar */
+    right: 10px;
+    /* Distance from the left edge */
+    top: 10px;
+    /* Distance from the top edge */
+    z-index: 1;
+    /* Ensure it is above other elements */
+}
+
+#toggleSidebar-right {
+    background: transparent;
+    /* Make the button background transparent */
+    border: none;
+    /* Remove border */
+    color: #ffffff;
+    /* Icon color */
+    cursor: pointer;
+    /* Pointer cursor */
+    font-size: 20px;
+    /* Size of the icon */
+    position: absolute;
+    /* Position the button absolutely within the sidebar */
+    left: 10px;
+    /* Distance from the left edge */
+    top: 10px;
+    /* Distance from the top edge */
+    z-index: 1;
+    /* Ensure it is above other elements */
+}
+
+#toggleSidebar:hover,
+#toggleSidebar-right:hover {
+    color: #007bff;
+    /* Highlight color on hover */
+}
+
+.sidebar label {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.sidebar select,
+.sidebar input[type="text"] {
+    background-color: #616161;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px;
+    margin-top: 5px;
+    position: relative;
+}
+
+/* .sidebar button {
+    background-color: #444;
+    cursor: pointer;
+} */
+
+.sidebar button:hover {
+    background-color: #ffffffd9;
+}
+
+.sidebar audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.sidebar.hidden label,
+.sidebar.hidden select,
+.sidebar.hidden input,
+.sidebar.hidden div.dictionary,
+.sidebar.hidden button {
+    display: none;
+    /* Hide these elements when sidebar is collapsed */
+}
+
+.sidebar.hidden #toggleSidebar {
+    z-index: 1;
+
+    /* Show toggle button when collapsed */
+}
+
+
+/* Chat Interface */
+.chat-interface {
+    order: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar h1 {
+    font-size: 35px;
+    color: #000000;
+    /* Text color */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    /* Text shadow */
+    background: linear-gradient(90deg, #ff00e6, #00fbff);
+    /* Gradient background */
+    -webkit-background-clip: text;
+    /* Clip gradient to text */
+    -webkit-text-fill-color: transparent;
+    /* Fill text with gradient */
+    padding: 10px 20px;
+    /* Padding */
+    border-radius: 10px;
+    /* Rounded corners */
+    text-align: center;
+    /* Center text */
+    /* Bounce animation */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    /* Space below */
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.chat-section {
+    height: 100%;
+    /* Ensure it fills its parent */
+    display: flex;
+    /* Allow flex children */
+    flex-direction: column;
+    /* Stack children vertically */
+    padding: 10px;
+    /* background-color: #1a1a1a; */
+    color: #ffffff;
+    z-index: 0;
+}
+
+.chatbot {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Align to start */
+    overflow-y: auto;
+    /* Enable scrolling */
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: #2a2a2ae8;
+    margin-bottom: 10px;
+    width: 100%;
+    /* Ensure it takes full width of its parent */
+    box-sizing: border-box;
+    /* Include padding in width calculation */
+}
+
+
+/* Base styling for all messages */
+.message {
+    max-width: 80%;
+    /* Adjust this percentage */
+    width: fit-content;
+    /* Adjust to fit the content */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    color: #fff;
+    font-size: 16px;
+    word-wrap: break-word;
+    /* Ensure long words break properly */
+}
+
+/* Assistant message styling */
+.assistant-message {
+    background-color: #e954df7c;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+    /* Customize as needed */
+}
+
+/* User message styling */
+.user-message {
+    background-color: #007bffa6;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+    /* Customize as needed */
+}
+
+.message:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.message-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+}
+
+#messageInput {
+    font-size: medium;
+    border-radius: 15px;
+    border: 1px solid #444;
+    background-color: #ffffff;
+    color: #000000;
+    /* margin-bottom: 10px; */
+    flex: 1;
+    padding: 8px 12px;
+}
+
+#clearBtn {
+    padding: 8px 12px;
+    background-color: #ff0000b4;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#clearBtn:hover {
+    background-color: #ff0606;
+}
+
+/* Toggle Switch Style */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: rgb(255, 255, 255);
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #4caf50;
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
+
+
+.search-box {
+    display: flex;
+    align-items: center;
+    /* Căn giữa button theo chiều dọc */
+    width: 100%;
+    /* max-width: 400px; */
+    position: relative;
+    /* Thêm position relative cho container */
+}
+
+.search-box__input {
+    width: 80%;
+    padding: 8px 12px;
+    padding-right: 40px;
+    /* Thêm padding bên phải để tránh text bị đè */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-box__button {
+    position: relative;
+    /* Đặt button position absolute */
+    right: 0px;
+    /* Cách mép phải 4px */
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    margin: 5px;
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#dictionary {
+    order: 3;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+/* Liên kết với màu sáng và hiệu ứng khi hover */
+/* Phát âm audio control */
+#phonetics-list audio {
+    margin-top: 5px;
+}
+
+/* Định nghĩa khoảng cách giữa các phần tử */
+#phonetics-container,
+#meanings-container {
+    margin-top: 20px;
+}
+
+#meanings-container ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+/* Nút phát audio */
+button.play-audio {
+    width: 30px;
+    /* Kích thước nút */
+    height: 30px;
+    padding: 5px;
+    /* Khoảng đệm bên trong nút */
+    border: none;
+    background: none;
+    /* Loại bỏ nền */
+    cursor: pointer;
+}
+
+/* Ảnh icon trong nút */
+button.play-audio img {
+    width: 100%;
+    /* Giảm kích cỡ icon */
+    height: 100%;
+    max-width: 24px;
+    /* Kích thước tối đa để icon không quá lớn */
+    max-height: 24px;
+}
+
+
+
+/* Trên màn hình nhỏ (dưới 768px) */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .chat-interface {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        order: 1;
+        min-height: 55vh;
+        margin-bottom: 40vh;
+        height: 100%;
+        overflow-y: auto;
+        transition: height 0.3s;
+    }
+
+    /* Thay đổi thứ tự để sidebar và dictionary chuyển xuống dưới */
+    .container-left {
+        order: 2;
+        width: 100%;
+        margin-bottom: 30px;
+        /* flex-basis: auto; */
+        /* Đặt chiều rộng 100% để chiếm hết chiều ngang */
+    }
+
+    #setting,
+    #dictionary {
+        width: 100%;
+        /* flex-basis: auto; */
+    }
+
+    .resizer {
+        display: none;
+    }
+
+    .sidebar {
+        border-radius: 0%;
+    }
+
+    .container-right {
+        order: 3;
+        width: 100%;
+
+    }
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn English with LLM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Chat Interface Section -->
+        <div class="chat-interface">
+            <!-- <h1>Chat</h1> -->
+            <div class="chat-section">
+                <div id="chatbot" class="chatbot">
+                </div>
+                <div class="message-container">
+                    <input type="text" id="messageInput" placeholder="Type your message here...">
+                    <button id="clearBtn"><i class="material-icons">delete</i></button>
+                </div>
+
+            </div>
+        </div>
+        <!-- Sidebar Section -->
+        <div class="container-left">
+            <aside class="sidebar" id="setting">
+                <h1>Setting</h1>
+
+                <label for="activity">Activity</label>
+                <select id="activity">
+                    <option>Learning</option>
+                    <option>Reviewing</option>
+                </select>
+
+                <label for="level">Level</label>
+                <select id="level">
+                    <option>A1</option>
+                    <option>A2</option>
+                    <option>B1</option>
+                    <option>B2</option>
+                    <option>C1</option>
+                    <option>C2</option>
+                </select>
+
+                <label for="topic">Topic</label>
+                <select id="topic">
+                    <option>Education</option>
+                    <option>Travel</option>
+                    <option>Food and Cuisine</option>
+                    <option>Technology</option>
+                    <option>Health and Fitness</option>
+                    <option>Environment</option>
+                    <option>Arts and Culture</option>
+                    <option>Sports</option>
+                    <option>History</option>
+                    <option>Current Events</option>
+                    <option>Miscellaneous</option>
+                </select>
+
+                <div class="toggle-section">
+                    <label for="ttsToggle">Speak</label>
+                    <label class="switch">
+                        <input type="checkbox" id="ttsToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <label for="selectVoice">Voice</label>
+                <select id="selectVoice">
+                    <option>alloy</option>
+                    <option>echo</option>
+                    <option>fable</option>
+                    <option>onyx</option>
+                    <option>nova</option>
+                    <option>shimmer</option>
+                </select>
+
+
+                <audio id="ttsAudio" controls style="display:none;"></audio>
+
+            </aside>
+            <button id="toggleSidebar" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i> <!-- Icon for the toggle button -->
+            </button>
+        </div>
+
+
+        <div class="container-right">
+            <div class="resizer"></div>
+            <aside class="sidebar" id="dictionary">
+                <h1>Dictionary</h1>
+                <div class="search-box">
+                    <input type="text" class="search-box__input" placeholder="Type text for pronunciation"
+                        id="seachInput">
+                    <button class="search-box__button" id="seachBtn">🔍</button>
+                </div>
+                <div class="dictionary">
+                    <div id="word-container">
+                        <h2 id="word">Word: </h2>
+                    </div>
+
+                    <div id="phonetics-container">
+                        <h3>Pronunciation:</h3>
+                        <ul id="phonetics-list"></ul>
+                    </div>
+
+                    <div id="meanings-container">
+                        <h3>Meanings:</h3>
+                    </div>
+                </div>
+            </aside>
+
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

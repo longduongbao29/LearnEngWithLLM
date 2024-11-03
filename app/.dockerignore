@@ -1,0 +1,3 @@
+docker-compose.yml
+./.gradio
+./__pycache__
