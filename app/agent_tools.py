@@ -39,6 +39,8 @@ def _load_random_vocabs(topic,num_vocabs = 10):# -> list:
         vc = _load_vocabs(topic)
     return vc
 
+
+
 @tool
 def save_vocab(topic, input: str):
     """Save new vocabs, phases and grammar structures
@@ -46,15 +48,19 @@ def save_vocab(topic, input: str):
     params: 
     topic: topic name in lowercase
     """
+    return _save_vocab(topic, input)
+def _save_vocab(topic, input: str):
     with open(f"vocabs/{topic}.txt", 'a') as f:
         f.write(input + '\n')
-    _load_vocabs(topic)
+    
 @tool
 def check_vocab_exists(topic,vocab):
     """Check if a vocab exists in the saved list
     params: 
     topic: student name in lowercase
     """
+    return _check_vocab_exists(topic, vocab)
+def _check_vocab_exists(topic,vocab):
     try:
         vc = vocab.split(':')
         for line in _load_vocabs(topic):

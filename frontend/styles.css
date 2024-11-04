@@ -33,13 +33,14 @@
     position: relative;
 }
 
+/* 
 #dictionary {
     width: 400px;
-}
+} */
 
 /* Sidebar */
 .sidebar {
-    width: 250px;
+    width: 300px;
     background-color: #1e1e1ee9;
     padding: 20px;
     display: flex;
@@ -87,6 +88,7 @@
     transition: opacity 0.3s ease;
     /* Smooth transition for content */
 }
+
 
 
 #toggleSidebar {
@@ -153,13 +155,22 @@
     position: relative;
 }
 
-/* .sidebar button {
-    background-color: #444;
+.sidebar button {
+    padding: 10px 15px;
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-} */
+
+}
 
 .sidebar button:hover {
-    background-color: #ffffffd9;
+    background-color: #004cffd9;
+}
+
+#vocab {
+    min-height: 40px;
 }
 
 .sidebar audio {
@@ -327,7 +338,7 @@
     background-color: #ff0000b4;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
@@ -448,6 +459,7 @@ input:checked+.slider:before {
 
 /* Nút phát audio */
 button.play-audio {
+    border-radius: 50%;
     width: 30px;
     /* Kích thước nút */
     height: 30px;
@@ -492,7 +504,7 @@ button.play-audio img {
 
     /* Thay đổi thứ tự để sidebar và dictionary chuyển xuống dưới */
     .container-left {
-        order: 2;
+        order: 3;
         width: 100%;
         margin-bottom: 30px;
         /* flex-basis: auto; */
@@ -514,8 +526,39 @@ button.play-audio img {
     }
 
     .container-right {
-        order: 3;
-        width: 100%;
+        order: 2;
 
     }
+}
+
+#recordButton {
+    background-color: #4caf4f00;
+    /* Màu nền ban đầu */
+    color: white;
+    border: none;
+    /* padding: 15px; */
+    font-size: 18px;
+    border-radius: 50%;
+    /* Làm cho nút hình tròn */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Hiệu ứng chuyển đổi mượt mà */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Đổ bóng nhẹ */
+}
+
+#recordButton:hover {
+    background-color: #45a04912;
+    /* Đổi màu khi hover */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
+    /* Tăng bóng khi hover */
+}
+
+#recordButton:active {
+    background-color: #388e3c15;
+    /* Đổi màu khi nhấn */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    /* Giảm bóng khi nhấn */
+    transform: scale(0.95);
+    /* Giảm kích thước khi nhấn */
 }

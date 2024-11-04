@@ -9,8 +9,7 @@ WORKDIR /app
 # Sao chép và cài đặt các phụ thuộc
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-
-
+RUN pip install -qU duckduckgo-search langchain-community
 COPY . .
 
 CMD ["python","api.py"]

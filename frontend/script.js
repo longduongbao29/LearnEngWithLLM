@@ -111,7 +111,7 @@ async function fetchFromAPI() {
         role: msg.classList.contains('user-message') ? 'user' : 'assistant', // Xác định role dựa vào class
         content: msg.textContent.trim() // Lấy nội dung và xóa khoảng trắng
     }));
-    console.log(messages);
+    // console.log(messages);
     
 
     const requestBody = JSON.stringify({
@@ -239,12 +239,12 @@ function speak(text) {
 }
 
 // Pronounce button functionality
-seachBtn.addEventListener('click', () => {
-    const pronunciationText = seachInput.value;
-    if (pronunciationText) {
-        speak(pronunciationText);
-    }
-});
+// seachBtn.addEventListener('click', () => {
+//     const pronunciationText = seachInput.value;
+//     if (pronunciationText) {
+//         speak(pronunciationText);
+//     }
+// });
 
 function playAudio(audioSrc) {
     const audio = new Audio(audioSrc);
@@ -256,7 +256,7 @@ const resizer = document.querySelector('.resizer');
 let isResizing = false;
 
 // Bắt đầu điều chỉnh kích thước khi nhấn chuộtlet isResizing = false;
-
+/** 
 resizer.addEventListener('mousedown', (event) => {
     isResizing = true;
     document.body.style.pointerEvents = 'none'; // Tạm thời vô hiệu hóa sự kiện con trỏ
@@ -280,7 +280,7 @@ document.addEventListener('mouseup', () => {
     }
 });
 
-
+*/
 function saveToLocalStorage(key, value) {
     localStorage.setItem(key, value);
 }
@@ -309,7 +309,7 @@ topicSelect.addEventListener('change', () => saveToLocalStorage('topicSelect', t
 window.addEventListener('load', () => {
     messageInput.value = loadFromLocalStorage('messageInput');
     ttsToggle.checked = JSON.parse(loadFromLocalStorage('ttsToggle', 'false'));
-    seachInput.value = loadFromLocalStorage('seachInput');
+    // seachInput.value = loadFromLocalStorage('seachInput');
     selectVoice.value = loadFromLocalStorage('selectVoice');
     if (JSON.parse(loadFromLocalStorage('sidebarHidden', 'false'))) {
         sidebar.classList.add('hidden');
@@ -331,3 +331,132 @@ window.addEventListener('resize', adjustChatInterfaceHeight);
 
 // Gọi hàm ban đầu
 adjustChatInterfaceHeight();
+async function save_vocabs(vocab) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = ''; // Xóa nội dung cũ
+    try {
+        const topic = topicSelect.value;
+        console.log(topic,vocab);
+        
+        const response = await fetch(api+'save_vocab', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ topic, vocab })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            messageElement.textContent = result.message;
+            messageElement.style.color = 'green';
+        } else {
+            messageElement.textContent = result.message || 'An error occurred';
+            messageElement.style.color = 'red';
+        }
+
+    } catch (error) {
+        messageElement.textContent = 'Failed to save vocabulary. Please try again.';
+        messageElement.style.color = 'red';
+        console.error(error);
+    }
+}
+
+const saveBtn = document.getElementById("save-btn")
+const vocab  =document.getElementById("vocab")
+saveBtn.addEventListener('click', () => { 
+    const userVocab = vocab.value;
+    save_vocabs(userVocab);
+})
+
+
+const recordButton = document.getElementById('recordButton');
+const recordIcon = document.getElementById('recordIcon')
+const statusDisplay = document.getElementById('status');
+const transcriptionDisplay = document.getElementById('messageInput');
+
+let mediaRecorder;
+
+
+recordButton.addEventListener('click', async () => {
+    // Kiểm tra xem có đang ghi không
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        recordIcon.src = "https://cdn-icons-png.flaticon.com/512/3687/3687408.png";
+    } else {
+        // Bắt đầu ghi âm
+        recordIcon.src = "https://cdn-icons-png.flaticon.com/512/3178/3178286.png";
+        await startRecording();
+    }
+});
+
+// Hàm bắt đầu ghi âm
+async function startRecording() {
+    try {
+        let audioChunks = [];
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        
+        mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+        
+        mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav'});
+        
+        // Chuyển đổi sang mp3 nếu cần thiết
+        // const mp3Blob = await convertToMp3(audioBlob);
+        
+        // Tạo form data để gửi lên API
+        await sendAudioToAPI(audioBlob)
+    };
+        
+        mediaRecorder.start();
+
+    } catch (error) {
+        console.error("Microphone access denied", error);
+        statusDisplay.textContent = "Microphone access denied.";
+    }
+}
+
+// Hàm gửi âm thanh đến API
+async function sendAudioToAPI(audioBlob) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.wav');
+
+    try {
+        const response = await fetch(api+'speech_to_text', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) throw new Error("Failed to transcribe audio");
+
+        const data = await response.json();
+        console.log("Transcription result:", data);
+        transcriptionDisplay.value = data.text;
+        
+    } catch (error) {
+        console.error("Error transcribing audio:", error);
+        transcriptionDisplay.textContent = "Error: Could not transcribe audio.";
+    
+    }
+}
+
+// async function convertToMp3(audioBlob) {
+//     if (audioBlob.type === 'audio/mp3') {
+//         return audioBlob;  // Đã là .mp3 thì không cần chuyển đổi
+//     }
+
+//     // Sử dụng library ffmpeg-wasm để chuyển đổi sang .mp3
+//     const { createFFmpeg, fetchFile } = FFmpeg;
+//     const ffmpeg = createFFmpeg({ log: true });
+//     await ffmpeg.load();
+
+//     // Đọc tệp từ audioBlob và chuyển đổi thành mp3
+//     ffmpeg.FS('writeFile', 'input.webm', await fetchFile(audioBlob));
+//     await ffmpeg.run('-i', 'input.webm', 'output.mp3');
+//     const mp3Data = ffmpeg.FS('readFile', 'output.mp3');
+
+//     // Chuyển đổi sang Blob để gửi lên API
+//     return new Blob([mp3Data.buffer], { type: 'audio/mp3' });
+// }
