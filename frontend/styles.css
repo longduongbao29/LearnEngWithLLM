@@ -43,6 +43,7 @@
     width: 300px;
     background-color: #1e1e1ee9;
     padding: 20px;
+    padding-top: 50px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -140,7 +141,8 @@
 }
 
 .sidebar label {
-    font-size: 14px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 18px;
     color: #ccc;
 }
 
@@ -196,6 +198,7 @@
 
 /* Chat Interface */
 .chat-interface {
+
     order: 2;
     flex: 1;
     display: flex;
@@ -212,7 +215,7 @@
     /* Text shadow */
     background: linear-gradient(90deg, #ff00e6, #00fbff);
     /* Gradient background */
-    -webkit-background-clip: text;
+    /* -webkit-background-clip: text; */
     /* Clip gradient to text */
     -webkit-text-fill-color: transparent;
     /* Fill text with gradient */
@@ -386,7 +389,7 @@
 }
 
 input:checked+.slider {
-    background-color: #4caf50;
+    background-color: #007bff;
 }
 
 input:checked+.slider:before {
@@ -488,6 +491,30 @@ button.play-audio img {
     .main-container {
         flex-direction: column;
         overflow: auto;
+        z-index: 999;
+    }
+
+    .container-prompt {
+        display: none;
+        max-width: 400px;
+        height: 400px;
+        /* flex-grow: 1; */
+        /* flex-direction: column; */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* flex-direction: column; */
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        /* overflow-y: auto; */
+        background-color: #ffffff;
+        /* Background color of the prompt box */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        z-index: 1000;
+        /* High z-index to ensure it appears on top */
     }
 
     .chat-interface {
@@ -529,6 +556,7 @@ button.play-audio img {
         order: 2;
 
     }
+
 }
 
 #recordButton {
@@ -561,4 +589,221 @@ button.play-audio img {
     /* Giảm bóng khi nhấn */
     transform: scale(0.95);
     /* Giảm kích thước khi nhấn */
+}
+
+#recordIcon {
+    /* color: #0077ff; */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+#topic {
+    margin-bottom: 30px;
+}
+
+.sidebar select {
+    margin-bottom: 15px;
+}
+
+.container-prompt {
+    display: none;
+    width: 800px;
+    height: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #ffffff;
+    /* Background color of the prompt box */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
+    /* High z-index to ensure it appears on top */
+}
+
+
+
+.container-prompt textarea {
+    width: 100%;
+    /* Full width of the container */
+    /* max-width: 600px; */
+    /* Set maximum width */
+    height: 100%;
+    /* Adjust height as needed */
+    font-size: 16px;
+    /* Maintain standard font size */
+    padding: 10px;
+    /* Padding for comfortable typing */
+    border: 2px solid #ccc;
+    /* Border styling */
+    border-radius: 8px;
+    /* Rounded corners */
+    box-sizing: border-box;
+    /* Ensures padding doesn't affect width */
+    resize: none;
+    /* Prevents resizing if desired */
+    overflow-y: auto;
+    /* Allows scrolling if text overflows */
+}
+
+.container-prompt button {
+    margin-top: 10px;
+    padding: 12px 20px;
+    /* Adds padding for size and comfort */
+    font-size: 16px;
+    /* Font size for readability */
+    font-weight: bold;
+    /* Make text bold */
+    color: #ffffff;
+    /* Text color */
+    background-color: #4CAF50;
+    /* Green background color */
+    border: none;
+    /* Remove default border */
+    border-radius: 5px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Show pointer cursor on hover */
+    transition: background-color 0.3s ease;
+    /* Smooth transition on hover */
+}
+
+.container-prompt button:hover {
+    background-color: #45a049;
+    /* Darker green on hover */
+}
+
+.container-prompt button:active {
+    background-color: #3e8e41;
+    /* Even darker green on click */
+    transform: scale(0.98);
+    /* Slight shrink effect on click */
+}
+
+.container-prompt label {
+    font-size: 18px;
+    /* Increase font size for readability */
+    font-weight: 600;
+    /* Slightly bold */
+    color: #333;
+    /* Dark text color */
+    margin-bottom: 10px;
+    /* Spacing below the label */
+    display: block;
+    /* Ensures it takes up full width */
+    text-transform: uppercase;
+    /* Optional: makes the text uppercase */
+    letter-spacing: 1px;
+    /* Adds spacing between letters */
+}
+
+#exitButton {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    /* Red color for a 'close' button */
+    border: none;
+    border-radius: 50%;
+    /* Makes the button circular */
+    color: rgb(255, 0, 0);
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    /* Smooth transition */
+}
+
+#exitButton:hover {
+    background-color: #ff1f1f1d;
+    /* Darker red on hover */
+}
+
+#exitButton:active {
+    transform: scale(0.9);
+    /* Slightly smaller when clicked */
+}
+
+/* Optional: Icon size adjustments */
+#exitButton i {
+    font-size: 18px;
+    /* Adjust icon size if using Font Awesome */
+}
+
+
+.llm-setting {
+    /* width: 300px; */
+    padding: 20px;
+    /* border: 1px solid #ddd; */
+    margin-top: 30px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.llm-setting h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.llm-setting label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    color: #555;
+}
+
+.llm-setting select,
+.llm-setting input[type="range"],
+.llm-setting textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.llm-setting textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.llm-setting #temperatureValue {
+    display: inline-block;
+    margin-left: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.llm-setting button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.llm-setting button:hover {
+    background-color: #45a049;
 }

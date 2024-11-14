@@ -34,7 +34,7 @@ function addMessage(message, sender) {
         } else {
             clearInterval(typingInterval); // Stop when all characters are displayed
         }
-    }, 30); // Adjust speed here by changing delay time (in milliseconds)
+    }, 10); // Adjust speed here by changing delay time (in milliseconds)
 }
 
 
@@ -44,7 +44,6 @@ clearBtn.addEventListener('click', () => {
         chatBot.innerHTML = ''; // Clear the chat
     }
 });
-
 // Function to handle Text-to-Speech
 
 // Select elements from the DOM
@@ -55,13 +54,6 @@ toggleSidebarBtn.addEventListener('click', () => {
     chatInterface.classList.toggle('expanded');
     // sidebar.classList.toggle('collapsed');
 });
-
-
-
-
-// Hàm để lấy giá trị
-
-
 
 async function fetchAudio(input, voice,id) {
     const requestBody_audio = JSON.stringify({
@@ -106,7 +98,7 @@ async function fetchFromAPI() {
     const voice = selectVoice.value;
     const userMessage = messageInput.value;
     const messages = Array.from(chatBot.querySelectorAll('.message'))
-    .slice(0, -1) // Bỏ qua tin nhắn cuối cùng
+    .slice(-20, -1) // Bỏ qua tin nhắn cuối cùng
     .map(msg => ({
         role: msg.classList.contains('user-message') ? 'user' : 'assistant', // Xác định role dựa vào class
         content: msg.textContent.trim() // Lấy nội dung và xóa khoảng trắng
@@ -305,18 +297,76 @@ activitySelect.addEventListener('change', () => saveToLocalStorage('activitySele
 levelSelect.addEventListener('change', () => saveToLocalStorage('levelSelect', levelSelect.value));
 topicSelect.addEventListener('change', () => saveToLocalStorage('topicSelect', topicSelect.value));
 
+
+async function loadLLMSetting() {
+    try {
+        const response = await fetch(api+'get_setting', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch settings: ${response.statusText}`);
+        }
+
+        const settings = await response.json();
+
+        // Populate form fields with the fetched settings
+        if (settings.model) {
+            document.getElementById('modelSelect').value = settings.model;
+        }
+        if (settings.temperature) {
+            document.getElementById('temperatureRange').value = settings.temperature;
+            document.getElementById('temperatureValue').textContent = settings.temperature;
+        }
+
+        // console.log("Settings loaded successfully:", settings);
+    } catch (error) {
+        console.error("Error loading settings:", error);
+        alert("Failed to load settings. Please try again.");
+    }
+}
+document.addEventListener('DOMContentLoaded', loadLLMSetting);
+// Call the function to load settings when the page loads
 // Load saved data from local storage on page load
+
+const prompt_text = document.getElementById("prompt")
+function loadPrompt() {
+    fetch(api+`prompt/${activitySelect.value}`,{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok: " + response.statusText);
+            }
+            return response.json(); // Parse the JSON from the response
+        })
+        .then(data => {
+            prompt_text.value = data.template
+      
+        })
+         .catch(error => {
+             console.log(error);
+        });
+
+}
+
 window.addEventListener('load', () => {
-    messageInput.value = loadFromLocalStorage('messageInput');
+    // messageInput.value = loadFromLocalStorage('messageInput');
     ttsToggle.checked = JSON.parse(loadFromLocalStorage('ttsToggle', 'false'));
     // seachInput.value = loadFromLocalStorage('seachInput');
-    selectVoice.value = loadFromLocalStorage('selectVoice');
+    selectVoice.value = loadFromLocalStorage('selectVoice','alloy');
     if (JSON.parse(loadFromLocalStorage('sidebarHidden', 'false'))) {
         sidebar.classList.add('hidden');
     }
-    activitySelect.value = loadFromLocalStorage('activitySelect');
-    levelSelect.value = loadFromLocalStorage('levelSelect');
-    topicSelect.value = loadFromLocalStorage('topicSelect');
+    activitySelect.value = loadFromLocalStorage('activitySelect','Learning');
+    levelSelect.value = loadFromLocalStorage('levelSelect','A1');
+    topicSelect.value = loadFromLocalStorage('topicSelect', 'Education');
 });
 
 // const chatInterface = document.querySelector('.chat-interface');
@@ -336,7 +386,7 @@ async function save_vocabs(vocab) {
     messageElement.textContent = ''; // Xóa nội dung cũ
     try {
         const topic = topicSelect.value;
-        console.log(topic,vocab);
+        // console.log(topic,vocab);
         
         const response = await fetch(api+'save_vocab', {
             method: 'POST',
@@ -368,6 +418,7 @@ const vocab  =document.getElementById("vocab")
 saveBtn.addEventListener('click', () => { 
     const userVocab = vocab.value;
     save_vocabs(userVocab);
+    vocab.value = '';
 })
 
 
@@ -383,10 +434,10 @@ recordButton.addEventListener('click', async () => {
     // Kiểm tra xem có đang ghi không
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
-        recordIcon.src = "https://cdn-icons-png.flaticon.com/512/3687/3687408.png";
+        recordIcon.src = "https://cdn-icons-gif.flaticon.com/12761/12761181.gif";
     } else {
         // Bắt đầu ghi âm
-        recordIcon.src = "https://cdn-icons-png.flaticon.com/512/3178/3178286.png";
+        recordIcon.src = "https://cdn-icons-gif.flaticon.com/12761/12761188.gif";
         await startRecording();
     }
 });
@@ -432,7 +483,7 @@ async function sendAudioToAPI(audioBlob) {
         if (!response.ok) throw new Error("Failed to transcribe audio");
 
         const data = await response.json();
-        console.log("Transcription result:", data);
+        // console.log("Transcription result:", data);
         transcriptionDisplay.value = data.text;
         
     } catch (error) {
@@ -460,3 +511,97 @@ async function sendAudioToAPI(audioBlob) {
 //     // Chuyển đổi sang Blob để gửi lên API
 //     return new Blob([mp3Data.buffer], { type: 'audio/mp3' });
 // }
+
+
+document.getElementById("save-prompt").addEventListener('click', () => {
+    const name = activitySelect.value;
+    const template = prompt_text.value
+    const requestBody = JSON.stringify({
+        name,
+        template,
+    });
+
+    fetch(api+"custom_prompt",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+        },
+        body: requestBody
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok: " + response.statusText);
+            }
+            return response.json(); // Parse the JSON from the response
+        })
+        .then(data => {
+            prompt.value = data.template
+            alert("Prompt saved!")
+        })
+         .catch(error => {
+             console.log(error);
+        });
+})
+
+document.getElementById("exitButton").addEventListener("click", function() {
+    document.getElementById("promptContainer").style.display = "none";
+    // document.querySelector(".main-container::before").style.display = "none"; 
+});
+
+
+
+// Update the temperature display value in real-time
+const temperatureRange = document.getElementById("temperatureRange");
+const temperatureValue = document.getElementById("temperatureValue");
+
+temperatureRange.addEventListener("input", function () {
+    temperatureValue.textContent = temperatureRange.value;
+});
+
+// Save settings on button click
+document.getElementById("saveSettings").addEventListener("click", function () {
+    const selectedModel = document.getElementById("modelSelect").value;
+    const temperature = temperatureRange.value;
+    // const customPrompt = document.getElementById("customPrompt").value;
+
+    // Example of how you might use the values (e.g., log to console or send to API)
+    // console.log("Model:", selectedModel);
+    // console.log("Temperature:", temperature);
+});
+
+// Show the overlay when the "Customize Prompt" button is clicked
+document.getElementById("customizePromptButton").addEventListener("click", function () {
+    loadPrompt()
+    document.getElementById("promptContainer").style.display = "flex";
+});
+
+document.getElementById("saveSettings").addEventListener('click', function(){
+    const temperature = temperatureRange.value;
+    const model =  document.getElementById("modelSelect").value;
+    const requestBody = JSON.stringify({
+        model,
+        temperature,
+    });
+
+    fetch(api+"llm_setting",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+        },
+        body: requestBody
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok: " + response.statusText);
+            }
+            return response.json(); // Parse the JSON from the response
+        })
+        .then(data => {
+            alert(data.message)
+        })
+         .catch(error => {
+             console.log(error);
+        });
+})
+
+

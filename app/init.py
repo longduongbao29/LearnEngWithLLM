@@ -1,6 +1,6 @@
 import json
 from agent import Agent
-
+from agent_tools import _load_vocabs
 
 ag = Agent()
 
@@ -27,12 +27,14 @@ def save_state(state):
     with open('files/state.json', 'w') as f:
         json.dump(state, f)
 
+
 def chat(input, chat_history, activity,level,topic):
     inp = {
         "input": input,
         "chat_history": chat_history,
         "level": level,
-        "topic": topic
+        "topic": topic,
+        "vocabs": _load_vocabs(topic),
     }
     try:
         ag.switch_act(activity)

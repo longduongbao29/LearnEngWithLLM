@@ -12,33 +12,36 @@
 
 <body>
     <div class="main-container">
+
         <!-- Chat Interface Section -->
         <div class="chat-interface">
             <!-- <h1>Chat</h1> -->
             <div class="chat-section">
                 <div id="chatbot" class="chatbot">
+
                 </div>
                 <div class="message-container">
-                    <input type="text" id="messageInput" placeholder="Type your message here...">
+                    <input type="text" id="messageInput" autocomplete="off">
                     <button id="recordButton">
-                        <img id="recordIcon" src="https://cdn-icons-png.flaticon.com/512/3687/3687408.png" alt="Record"
-                            style="width: 50px; height: 50px; margin:0 ; padding:0; vertical-align: middle;" />
+                        <img id="recordIcon" src="https://cdn-icons-gif.flaticon.com/12761/12761181.gif" alt="Record" />
                     </button>
+
                     <button id="clearBtn"><i class="material-icons">delete</i></button>
                 </div>
-
             </div>
         </div>
         <!-- Sidebar Section -->
         <div class="container-left">
             <aside class="sidebar" id="setting">
-                <h1>Setting</h1>
+                <!-- <h1>Setting</h1> -->
 
                 <label for="activity">Activity</label>
                 <select id="activity">
                     <option>Learning</option>
                     <option>Reviewing</option>
                     <option>Practicing</option>
+                    <option>Translating</option>
+                    <option>Custom</option>
                 </select>
 
                 <label for="level">Level</label>
@@ -97,7 +100,7 @@
         <div class="container-right">
             <!-- <div class="resizer"></div> -->
             <aside class="sidebar" id="dictionary">
-                <h1>Save Vocabs</h1>
+                <!-- <h1>Save Vocabs</h1> -->
                 <!-- <div class="search-box">
                     <input type="text" class="search-box__input" placeholder="Type text for pronunciation"
                         id="seachInput">
@@ -121,11 +124,46 @@
                 <input type="text" id="vocab" name="vocab" required>
                 <button type="submit" id="save-btn">Save</button>
                 <p id="message"></p>
+
+
+                <div class="llm-setting">
+                    <h2>LLM Model Settings</h2>
+
+                    <!-- Model Selection -->
+                    <label for="modelSelect">Select Model:</label>
+                    <select id="modelSelect">
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-4o-2024-08-06">GPT-4o</option>
+                        <!-- <option value="o1-preview">o1-preview</option> -->
+                    </select>
+
+                    <!-- Temperature Slider -->
+                    <label for="temperatureRange">Temperature:</label>
+                    <input type="range" id="temperatureRange" min="0" max="1" step="0.1" value="0">
+                    <span id="temperatureValue">0</span>
+
+                    <!-- Customize Prompt -->
+                    <button id="customizePromptButton">Customize Prompt</button>
+                    <!-- Save Button -->
+                    <button id="saveSettings">Save Settings</button>
+                </div>
+
             </aside>
-
-
         </div>
+        <div class="container-prompt" id="promptContainer">
+            <button id="exitButton">
+                <i class="fas fa-times"></i>
+            </button>
+            <label for="prompt">Customize Your Prompt</label>
+            <textarea id="prompt"></textarea>
+            <button id="save-prompt">Save</button>
+        </div>
+
     </div>
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.0/dist/ffmpeg.min.js"></script>
     <script src="script.js"></script>
 </body>

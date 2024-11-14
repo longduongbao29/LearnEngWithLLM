@@ -10,12 +10,13 @@ def switch_activity(activity_):
     global activity
     activity = activity_
 @tool
-def load_vocabs_for_review( topic,num_vocabs = 10):
+def load_vocabs_for_review(topic:str,num_vocabs = 10):
     """Load all saved vocabs, phrases and grammar structures that saved before to review, use this for reviewing activity.
     params: 
     topic: topic name in lowercase
     """
     # global reviewing_word
+    topic = topic.lower()
     reviewing_word = _load_random_vocabs(topic,num_vocabs)
     return reviewing_word
 @tool
@@ -23,8 +24,10 @@ def load_all_vocabs(topic):
     """Load all vocabs, phrases and grammar structures that saved before
     params: 
     topic: topic in lowercase"""
+    topic = topic.lower()
     return _load_vocabs(topic)
 def _load_vocabs(topic):
+    topic = topic.lower()
     vocabs = []
     with open(f"vocabs/{topic}.txt", 'r') as f:
         for line in f:
@@ -33,6 +36,7 @@ def _load_vocabs(topic):
 
 
 def _load_random_vocabs(topic,num_vocabs = 10):# -> list:
+    topic = topic.lower()
     try:
         vc=random.sample(_load_vocabs(topic),num_vocabs)
     except ValueError:
@@ -43,12 +47,19 @@ def _load_random_vocabs(topic,num_vocabs = 10):# -> list:
 
 @tool
 def save_vocab(topic, input: str):
-    """Save new vocabs, phases and grammar structures
+    """Use this tool when users request to save vocabulary.
     Vocabs must have the following format: <vocab> (<type>): <means in Vietnamese>
     params: 
     topic: topic name in lowercase
+    return: bool
+    True if vocab has been saved successfully.
+    False if vocab already existed.
     """
-    return _save_vocab(topic, input)
+    topic = topic.lower()
+    if not _check_vocab_exists(topic, input):
+        _save_vocab(topic, input)
+        return True
+    return False
 def _save_vocab(topic, input: str):
     with open(f"vocabs/{topic}.txt", 'a') as f:
         f.write(input + '\n')
@@ -59,8 +70,10 @@ def check_vocab_exists(topic,vocab):
     params: 
     topic: student name in lowercase
     """
+    topic = topic.lower()
     return _check_vocab_exists(topic, vocab)
 def _check_vocab_exists(topic,vocab):
+    topic = topic.lower()
     try:
         vc = vocab.split(':')
         for line in _load_vocabs(topic):

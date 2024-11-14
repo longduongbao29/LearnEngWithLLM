@@ -8,9 +8,10 @@ from fastapi.responses import FileResponse
 from speech2text import speech2text
 import agent_tools
 import init
-
 from text2speech import stream_audio_from_text
-import speech_recognition as sr
+from agent import ACTIVITY_PROMPT
+from langchain_core.prompts.prompt import PromptTemplate
+
 class Config(BaseModel):
     activity: str = "Learning"
     level: str = "B2"
@@ -24,6 +25,11 @@ class Audio(BaseModel):
 class Vocab(BaseModel):
     vocab : str = ""
     topic: str = ""
+    
+class Prompt(BaseModel):
+    name: str
+    template: str
+    
 app = FastAPI()
 
 app.add_middleware(
@@ -97,9 +103,51 @@ async def speech_to_text(audio: UploadFile = File(...)):
 
         return {"text": text}
         
-    except sr.UnknownValueError:
-        raise JSONResponse(status_code=400, content="Could not understand audio.")
-    except sr.RequestError as e:
+    except Exception as e:
+        raise JSONResponse(status_code=500, content=f"Error with the speech recognition service: {e}")
+
+@app.get("/api/prompt/{prompt_name}")
+async def get_prompt(prompt_name: str):
+    return ACTIVITY_PROMPT[prompt_name]
+
+@app.post("/api/custom_prompt")
+async def custom_prompt(prompt:Prompt):
+    try:
+        ACTIVITY_PROMPT[prompt.name] = PromptTemplate.from_template(prompt.template)
+        init.ag.prompt = ACTIVITY_PROMPT[prompt.name]
+        init.ag.create_agent()
+        return JSONResponse(
+                content={"message": "Prompt saved!"},
+                headers={"Content-Type": "application/json; charset=utf-8"}
+            )
+    except Exception as e:
+        raise JSONResponse(status_code=500, content=f"Error with the speech recognition service: {e}")
+
+class LLMSetting(BaseModel):
+    model:str 
+    temperature: float 
+    
+
+@app.post("/api/llm_setting")
+async def llm_setting(setting:LLMSetting):
+    try:
+        init.ag.llm_setting(setting.model,setting.temperature)
+        return JSONResponse(
+                content={"message": "Setting saved!"},
+                headers={"Content-Type": "application/json; charset=utf-8"}
+            )
+    except Exception as e:
+        raise JSONResponse(status_code=500, content=f"Error with the speech recognition service: {e}")
+
+@app.get("/api/get_setting")
+async def get_llm_setting():
+    try:
+        return JSONResponse(
+                content={"model":init.ag.llm_openai.model_name,
+                         "temperature":init.ag.llm_openai.temperature},
+                headers={"Content-Type": "application/json; charset=utf-8"}
+            )
+    except Exception as e:
         raise JSONResponse(status_code=500, content=f"Error with the speech recognition service: {e}")
 
 if __name__ == "__main__":
